@@ -1,0 +1,92 @@
+package main
+
+import (
+	"fmt"
+	"math"
+	"sort"
+)
+
+type Points struct {
+	x float64
+	y float64
+}
+
+type Distance struct {
+	Closest  []Points
+	Farthest []Points
+}
+
+func main() {
+	points := []Points{
+		{
+			x: 1,
+			y: 4,
+		},
+		{
+			x: 4,
+			y: 4,
+		},
+		{
+			x: 3,
+			y: 2,
+		},
+		{
+			x: 5,
+			y: 1,
+		},
+	}
+	distance := CalculateClosePoints(points)
+	fmt.Println("Closest")
+	fmt.Println(distance.Closest)
+	fmt.Println("Farthest")
+	fmt.Println(distance.Farthest)
+}
+
+func CalculateClosePoints(points []Points) Distance {
+	var (
+		a, b, distance float64
+	)
+
+	pointsMap := make(map[float64][]Points)
+
+	for i := 0; i < len(points); i++ {
+		for j := i + 1; j < len(points); j++ {
+
+			x1 := points[i].x
+			y1 := points[i].y
+			x2 := points[j].x
+			y2 := points[j].y
+
+			a = math.Pow(x2-x1, 2)
+			b = math.Pow(y2-y1, 2)
+
+			fmt.Println("x1 ", x1, "y1 ", y1, "x2 ", x2, "y2 ", y2)
+			distance = math.Sqrt(a + b)
+			fmt.Println("distance = ", distance)
+			pointsMap[distance] = []Points{
+				{
+					x1, y1,
+				},
+				{
+					x2, y2,
+				},
+			}
+		}
+		fmt.Println()
+	}
+
+	keys := make([]float64, 0)
+	for key := range pointsMap {
+		keys = append(keys, key)
+	}
+
+	sort.Float64s(keys)
+
+	low := pointsMap[keys[0]]
+	high := pointsMap[keys[len(keys)-1]]
+
+	return Distance{
+		Closest:  low,
+		Farthest: high,
+	}
+}

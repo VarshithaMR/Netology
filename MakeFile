@@ -1,0 +1,28 @@
+# Name of binary executable
+NAME=calculate-application
+
+# Local path
+LOCAL_ENV=PATH="$(GOPATH)/bin:$(PATH)"
+
+# Set Go module
+GO=GO111MODULE=on $(LOCAL_ENV) go
+
+#Root files
+ROOT_FILE=main/improvements.go
+
+# build the service
+build:
+	@echo "Building calculate-application-go....."
+	$(GO) mod tidy
+	$(GO) build -o $(NAME) $(ROOT_FILE)
+.PHONY: build
+
+# run the service
+run:
+	$(GO) run $(ROOT_FILE)
+.PHONY: run
+
+#run the test coverage
+test-coverage:
+	$(GO) test -coverprofile=coverage.out ./...
+.PHONY: coverage
